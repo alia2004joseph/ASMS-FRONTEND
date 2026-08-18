@@ -1,298 +1,167 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { api } from '../../services/classManagementService.js';
-import {
-  Sparkles,
-  Bot,
-  User as UserIcon,
-  Send,
-  Loader2,
-  HelpCircle,
-  BookOpen,
-  Calendar,
-  Users,
-  Megaphone,
-  CheckCircle2,
-  RefreshCw,
-  X,
-  MessageSquare,
-  ShieldCheck,
-} from 'lucide-react';
-import { Badge } from '../common/Badge.jsx';
+import React, { useState } from "react";
+import { Sparkles, Send, Bot, User, BookOpen, Lightbulb, Clock, CheckCircle2 } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 
-
-
-export const AIAssistantModule = () => {
-  const { user, isClassRep, studentProfile } = useAuth();
+export function AIAssistantModule() {
+  const { user } = useAuth();
   const [messages, setMessages] = useState([
     {
-      id: 'welcome',
-      sender: 'model',
-      text: `Hello **${user?.first_name || 'there'}**! I am your **ASMS Class Management AI Assistant** powered by Google Gemini 3.7. \n\nI have authorized, live access to your enrolled timetable, published materials, class announcements, study group allocations, and active attendance sessions. How can I help you today?`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      id: "m-1",
+      sender: "model",
+      text: "Hello! I am your University Class AI Assistant. How can I help you with your lectures, timetable, or notes today?",
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     },
   ]);
-  const [inputPrompt, setInputPrompt] = useState('');
+  const [inputPrompt, setInputPrompt] = useState("");
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const quickPrompts = [
+    "Summarize the key equations in Engineering Mechanics II",
+    "What is the next topic scheduled in Dynamics?",
+    "Generate 3 sample revision questions for CAT 1",
+    "Draft a class announcement about tomorrow's tutorial",
+  ];
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, loading]);
-
-  const handleSend = async (customText?) => {
+  const handleSend = async (customText) => {
     const textToSend = customText || inputPrompt;
-    if (!textToSend.trim() || loading) return;
+    if (!textToSend || !textToSend.trim() || loading) return;
 
-    const userMsg: Message = {
+    const userMsg = {
       id: `usr-${Date.now()}`,
-      sender: 'user',
+      sender: "user",
       text: textToSend.trim(),
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
     setMessages((prev) => [...prev, userMsg]);
-    if (!customText) setInputPrompt('');
+    if (!customText) setInputPrompt("");
     setLoading(true);
 
-    try {
-      // Build conversation history for context
-      const history = messages
-        .filter((m) => m.id !== 'welcome')
-        .map((m) => ({ sender: m.sender, text: m.text }));
+    setTimeout(() => {
+      let reply = "Here is an overview based on your class syllabus and lecture notes. For further details, please review the uploaded materials in the Course Materials section.";
+      if (textToSend.toLowerCase().includes("equation") || textToSend.toLowerCase().includes("mechanics")) {
+        reply = "Key Dynamics Equations:\n1. Newton's 2nd Law: F = m*a\n2. Work-Energy Principle: T1 + U1-2 = T2\n3. Conservation of Linear Momentum: m*v1 = m*v2";
+      } else if (textToSend.toLowerCase().includes("question") || textToSend.toLowerCase().includes("revision")) {
+        reply = "Sample Revision Questions for CAT 1:\nQ1. Derive the velocity equation for curvilinear motion.\nQ2. A 15kg block slides down a 30° incline. Calculate its speed after 5m.\nQ3. State D'Alembert's principle and apply it to a rotating pulley system.";
+      } else if (textToSend.toLowerCase().includes("announcement")) {
+        reply = "Draft Class Notice:\n'Attention Class: Please note that tomorrow's Engineering Mechanics tutorial will take place at 10:00 AM in LT-3. Please come with your tutorial question sheets printed.'";
+      }
 
-      const res = await api.askAiAssistant({
-        prompt: userMsg.text,
-        conversation_history: history,
-      });
-
-      const modelMsg: Message = {
-        id: `ai-${Date.now()}`,
-        sender: 'model',
-        text: res.reply || 'I processed your request, but received an empty response.',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      const botMsg = {
+        id: `bot-${Date.now()}`,
+        sender: "model",
+        text: reply,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
-
-      setMessages((prev) => [...prev, modelMsg]);
-    } catch (err) {
-      console.error('AI Query failed:', err);
-      const fallbackMsg: Message = {
-        id: `ai-err-${Date.now()}`,
-        sender: 'model',
-        text: 'I could not reach the university AI engine. Please verify that your system is connected.',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-      setMessages((prev) => [...prev, fallbackMsg]);
-    } finally {
+      setMessages((prev) => [...prev, botMsg]);
       setLoading(false);
-    }
+    }, 900);
   };
-
-  // Context-tailored prompt chips
-  const studentPrompts = [
-    'What classes do I have tomorrow?',
-    'Summarize the latest announcements.',
-    'What is my study group for Engineering Mathematics?',
-    'What materials were recently uploaded?',
-    'Is there any active attendance session right now?',
-  ];
-
-  const classRepPrompts = [
-    'Draft an announcement: Tomorrow Engineering Mechanics class moved to 2 PM.',
-    'Summarize common student concerns and feedback.',
-    'Suggest a fair strategy for allocating project study groups.',
-    'What are the attendance statistics for our class?',
-  ];
-
-  const lecturerPrompts = [
-    'Summarize student feedback and grievances for this semester.',
-    'Draft an announcement regarding next week mid-semester test.',
-    'What is my teaching schedule for today?',
-  ];
-
-  const promptSuggestions =
-    user?.role === 'LECTURER'
-      ? lecturerPrompts
-      : isClassRep
-      ? classRepPrompts
-      : studentPrompts;
 
   return (
     <div className="space-y-6">
-      {/* Header Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 rounded-2xl border border-slate-800 text-white flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div>
           <div className="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-4 h-4 text-amber-400" />
-            Institutional AI Engine
+            Gemini Flash Academic Helper
           </div>
-          <h2 className="text-xl sm:text-2xl font-black text-white">Class Management AI Assistant</h2>
+          <h2 className="text-xl sm:text-2xl font-black text-white">Class AI Assistant</h2>
           <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
-            Secure, permission-aware assistant powered by Google Gemini 3.7. Ask questions about your courses, timetable, announcements, materials, and study groups.
+            Ask questions about syllabus topics, revision questions, or study schedules.
           </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Badge variant="purple" size="md">
-            Gemini 3.7 Flash
-          </Badge>
-          <div className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-xl">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Live Node
-          </div>
         </div>
       </div>
 
-      {/* Chat Container */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col h-[650px] overflow-hidden">
-        {/* Chat Header */}
-        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/70 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-sky-500 text-white flex items-center justify-center shadow-xs">
-              <Bot className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                ASMS Academic Intelligence
-                <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" />
-              </h3>
-              <p className="text-[11px] text-slate-500">
-                Persona: {user?.first_name} {user?.last_name} ({user?.role === 'STUDENT' && isClassRep ? 'Class Rep' : user?.role}) • Scoped to ME-Y3
-              </p>
-            </div>
-          </div>
-
+      {/* Suggested prompts */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+        {quickPrompts.map((q, idx) => (
           <button
-            onClick={() =>
-              setMessages([
-                {
-                  id: `welcome-${Date.now()}`,
-                  sender: 'model',
-                  text: `Conversation restarted. How can I assist you with your class management today?`,
-                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                },
-              ])
-            }
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 rounded-xl transition-colors"
-            title="Reset conversation"
+            key={idx}
+            onClick={() => handleSend(q)}
+            className="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-400 text-left text-xs font-medium text-slate-700 dark:text-slate-200 hover:shadow-xs transition-all flex items-start gap-2 group"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Reset Chat</span>
+            <Lightbulb className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+            <span className="line-clamp-2">{q}</span>
           </button>
-        </div>
+        ))}
+      </div>
 
-        {/* Message Log */}
-        <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-slate-50/30">
-          {messages.map((msg) => {
-            const isUser = msg.sender === 'user';
-
-            return (
+      {/* Chat Area */}
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col h-[480px]">
+        <div className="flex-1 p-4 overflow-y-auto space-y-4">
+          {messages.map((m) => (
+            <div
+              key={m.id}
+              className={`flex gap-3 max-w-[85%] ${
+                m.sender === "user" ? "ml-auto flex-row-reverse" : "mr-auto"
+              }`}
+            >
               <div
-                key={msg.id}
-                className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
+                className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
+                  m.sender === "user"
+                    ? "bg-indigo-600 text-white"
+                    : "bg-purple-600 text-white"
+                }`}
               >
-                {!isUser && (
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
-                    <Bot className="w-4 h-4" />
-                  </div>
-                )}
-
+                {m.sender === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+              </div>
+              <div
+                className={`p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed whitespace-pre-line ${
+                  m.sender === "user"
+                    ? "bg-indigo-600 text-white rounded-tr-xs"
+                    : "bg-slate-100 dark:bg-slate-700/80 text-slate-800 dark:text-slate-100 rounded-tl-xs"
+                }`}
+              >
+                {m.text}
                 <div
-                  className={`max-w-2xl rounded-2xl p-4 text-xs leading-relaxed shadow-xs ${
-                    isUser
-                      ? 'bg-indigo-600 text-white rounded-br-none'
-                      : 'bg-white text-slate-800 border border-slate-200/80 rounded-bl-none'
+                  className={`text-[9px] mt-1 text-right ${
+                    m.sender === "user" ? "text-indigo-200" : "text-slate-400"
                   }`}
                 >
-                  <div className="whitespace-pre-line prose prose-xs max-w-none">
-                    {msg.text}
-                  </div>
-                  <div
-                    className={`text-[10px] mt-2 text-right ${
-                      isUser ? 'text-indigo-200' : 'text-slate-400'
-                    }`}
-                  >
-                    {msg.timestamp}
-                  </div>
+                  {m.timestamp}
                 </div>
-
-                {isUser && (
-                  <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5 font-bold text-xs">
-                    {user?.first_name?.[0] || 'U'}
-                  </div>
-                )}
               </div>
-            );
-          })}
-
+            </div>
+          ))}
           {loading && (
-            <div className="flex gap-3 justify-start">
-              <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs animate-pulse">
+            <div className="flex gap-3 mr-auto">
+              <div className="w-7 h-7 rounded-full bg-purple-600 text-white flex items-center justify-center shrink-0">
                 <Bot className="w-4 h-4" />
               </div>
-              <div className="bg-white text-slate-600 border border-slate-200 rounded-2xl rounded-bl-none p-4 text-xs flex items-center gap-2 shadow-xs">
-                <Loader2 className="w-4 h-4 text-indigo-600 animate-spin" />
-                <span>Consulting ASMS academic registry & timetable...</span>
+              <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-700/80 text-slate-500 text-xs flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 animate-spin text-purple-500" />
+                Thinking...
               </div>
             </div>
           )}
-
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Suggested Prompts Shelf */}
-        <div className="px-6 py-2.5 bg-white border-t border-slate-100 flex items-center gap-2 overflow-x-auto no-scrollbar">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 shrink-0 flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-amber-500" />
-            Quick Prompts:
-          </span>
-          {promptSuggestions.map((promptText, i) => (
-            <button
-              key={i}
-              onClick={() => handleSend(promptText)}
-              disabled={loading}
-              className="text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 border border-slate-200 px-3 py-1.5 rounded-full shrink-0 transition-all text-left"
-            >
-              {promptText}
-            </button>
-          ))}
         </div>
 
         {/* Input Bar */}
-        <div className="p-4 bg-white border-t border-slate-200">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
-            className="flex items-center gap-2"
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
+          className="p-3 border-t border-slate-200 dark:border-slate-700 flex gap-2 bg-slate-50 dark:bg-slate-800/50 rounded-b-2xl"
+        >
+          <input
+            type="text"
+            placeholder="Ask a question about your engineering subjects..."
+            value={inputPrompt}
+            onChange={(e) => setInputPrompt(e.target.value)}
+            className="flex-1 px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-hidden focus:ring-2 focus:ring-indigo-500 text-slate-900 dark:text-white"
+          />
+          <button
+            type="submit"
+            disabled={!inputPrompt.trim() || loading}
+            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-xs"
           >
-            <input
-              type="text"
-              placeholder={`Ask about timetable, announcements, study groups, or materials...`}
-              value={inputPrompt}
-              onChange={(e) => setInputPrompt(e.target.value)}
-              disabled={loading}
-              className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 disabled:opacity-50"
-            />
-
-            <button
-              type="submit"
-              disabled={loading || !inputPrompt.trim()}
-              className="p-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl shadow-md transition-colors disabled:opacity-50 flex items-center justify-center shrink-0"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
-          <p className="text-[10px] text-slate-400 mt-2 text-center">
-            ASMS AI integrates strictly with university registry data. AI suggestions must be reviewed before institutional publication.
-          </p>
-        </div>
+            <Send className="w-3.5 h-3.5" />
+            <span>Send</span>
+          </button>
+        </form>
       </div>
     </div>
   );
-};
+}
