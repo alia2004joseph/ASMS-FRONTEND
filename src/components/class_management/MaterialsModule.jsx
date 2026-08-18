@@ -61,7 +61,7 @@ export const MaterialsModule = () => {
     }
   };
 
-  const handleDownload = async (mat: Material) => {
+  const handleDownload = async (mat) => {
     try {
       setDownloadingId(mat.id);
       const res = await api.downloadMaterial(mat.id);
@@ -79,7 +79,7 @@ export const MaterialsModule = () => {
     }
   };
 
-  const handleDelete = async (mat: Material) => {
+  const handleDelete = async (mat) => {
     if (!confirm(`Are you sure you want to delete "${mat.title}"?`)) return;
     try {
       await api.deleteMaterial(mat.id);
@@ -135,7 +135,7 @@ export const MaterialsModule = () => {
     return matchesSearch && matchesSubject && matchesCategory;
   });
 
-  const getCategoryBadge = (cat: Material['category']) => {
+  const getCategoryBadge = (cat) => {
     switch (cat) {
       case 'LECTURE_NOTES':
         return <Badge variant="info">Lecture Notes</Badge>;
@@ -340,7 +340,7 @@ export const MaterialsModule = () => {
             <label className="block text-xs font-bold text-slate-700 mb-1">Material Category *</label>
             <select
               value={category}
-              onChange={(e) => setCategory(e.target.value as Material['category'])}
+              onChange={(e) => setCategory(e.target.value['category'])}
               className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none"
             >
               <option value="LECTURE_NOTES">Lecture Notes</option>
@@ -355,7 +355,7 @@ export const MaterialsModule = () => {
             <label className="block text-xs font-bold text-slate-700 mb-1">Document Title *</label>
             <input
               type="text"
-              placeholder="e.g. Lecture 05: Navier-Stokes Differential Formulation"
+              placeholder="e.g. Lecture 05-Stokes Differential Formulation"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white text-slate-800"
@@ -388,7 +388,7 @@ export const MaterialsModule = () => {
           <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-[11px] text-amber-900 flex items-start gap-2">
             <Lock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
             <p>
-              Security Policy: Files are strictly protected. Only students officially enrolled in this ASMS class can authenticate and download this material.
+              Security Policy are strictly protected. Only students officially enrolled in this ASMS class can authenticate and download this material.
             </p>
           </div>
 

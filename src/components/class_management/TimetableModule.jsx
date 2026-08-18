@@ -28,7 +28,7 @@ export const TimetableModule = () => {
     }
   };
 
-  const handleSendReminder = async (tt: TimetableEntry) => {
+  const handleSendReminder = async (tt) => {
     try {
       setSendingReminderId(tt.id);
       const res = await api.sendTimetableReminder(tt.id);
@@ -55,7 +55,7 @@ export const TimetableModule = () => {
 
   const filtered = selectedDay === 'ALL' ? timetable : timetable.filter((t) => t.day_of_week === selectedDay);
 
-  const getDayBadge = (day: DayOfWeek) => {
+  const getDayBadge = (day) => {
     switch (day) {
       case 'MONDAY':
         return <Badge variant="info">Monday</Badge>;
@@ -173,7 +173,7 @@ export const TimetableModule = () => {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[10px] text-slate-400">Class: ME-Y3-2026</span>
+                  <span className="text-[10px] text-slate-400">Class-Y3-2026</span>
                   <button
                     onClick={() => handleSendReminder(tt)}
                     disabled={isSending}

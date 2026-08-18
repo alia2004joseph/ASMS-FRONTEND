@@ -82,7 +82,7 @@ export const AttendanceModule = () => {
         sessionCode: qrModalSession.session_code,
         qrToken: qrModalSession.qr_token,
         course: qrModalSession.classroom_subject?.subject?.code,
-        timestamp: Date.now(),
+        timestamp.now(),
       });
 
       QRCode.toDataURL(qrPayload, { width: 320, margin: 2 })
@@ -124,7 +124,7 @@ export const AttendanceModule = () => {
     }
   };
 
-  const handleCloseSession = async (session: AttendanceSession) => {
+  const handleCloseSession = async (session) => {
     try {
       const closed = await api.closeAttendanceSession(session.id);
       setSessions((prev) => prev.map((s) => (s.id === session.id ? closed : s)));
@@ -160,7 +160,7 @@ export const AttendanceModule = () => {
     }
   };
 
-  const handleDownloadPDF = (session: AttendanceSession) => {
+  const handleDownloadPDF = (session) => {
     try {
       generateAttendanceSheetPDF(session, students);
       showToast('PDF Attendance Sheet Generated', 'Downloaded official signed attendance document.', 'success');
@@ -435,7 +435,7 @@ export const AttendanceModule = () => {
             <label className="block text-xs font-bold text-slate-700 mb-1">Lecture Topic / Module *</label>
             <input
               type="text"
-              placeholder="e.g. Advanced Thermodynamics: Brayton Cycle Analysis"
+              placeholder="e.g. Advanced Thermodynamics Cycle Analysis"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white text-slate-800"
@@ -472,7 +472,7 @@ export const AttendanceModule = () => {
           <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-900 flex items-start gap-2">
             <Sparkles className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <p>
-              Automated Check-in: Once launched, project the QR Code modal on the lecture theatre screen. Students scan or enter the 6-digit session token to authenticate.
+              Automated Check-in launched, project the QR Code modal on the lecture theatre screen. Students scan or enter the 6-digit session token to authenticate.
             </p>
           </div>
 

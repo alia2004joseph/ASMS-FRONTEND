@@ -35,7 +35,7 @@ export const PollsModule = () => {
   const [subjectId, setSubjectId] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [proposalAction, setProposalAction] = useState('Reschedule Lecture / Lab Session');
-  const [optionsText, setOptionsText] = useState('Option A: Friday 14:00 - 16:00\nOption B: Saturday 09:00 - 11:00\nOption C: Keep Original Slot');
+  const [optionsText, setOptionsText] = useState('Option A 14:00 - 16:00\nOption B 09:00 - 11:00\nOption C Original Slot');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -184,7 +184,7 @@ export const PollsModule = () => {
                   <h3 className="text-base font-bold text-slate-900 leading-snug mb-1.5">{poll.title}</h3>
                   <p className="text-xs text-slate-600 leading-relaxed mb-4">{poll.description}</p>
 
-                  {/* Proposal Mode: YES / NO / ABSTAIN buttons */}
+                  {/* Proposal Mode / NO / ABSTAIN buttons */}
                   {poll.poll_type === 'PROPOSAL' && (
                     <div className="space-y-3 mb-4">
                       <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-xs">

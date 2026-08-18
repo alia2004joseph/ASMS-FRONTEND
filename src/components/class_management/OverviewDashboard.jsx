@@ -95,7 +95,7 @@ export const OverviewDashboard = ({ onNavigate }) => {
                   ? 'Course Lecturer Portal'
                   : 'ASMS Administrator Console'}
               </span>
-              <span className="text-xs text-slate-400">• Class: ME-Y3-2026</span>
+              <span className="text-xs text-slate-400">• Class-Y3-2026</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
@@ -193,7 +193,7 @@ export const OverviewDashboard = ({ onNavigate }) => {
 
       {/* Stats Bento Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Timetable / Classes */}
+        {/* Card 1 / Classes */}
         <div
           onClick={() => onNavigate('TIMETABLE')}
           className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group"
@@ -211,7 +211,7 @@ export const OverviewDashboard = ({ onNavigate }) => {
           <p className="text-[10px] text-slate-400 mt-1">BSc. Mechanical Eng. (Year 3)</p>
         </div>
 
-        {/* Card 2: Materials Repository */}
+        {/* Card 2 Repository */}
         <div
           onClick={() => onNavigate('MATERIALS')}
           className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group"
@@ -229,7 +229,7 @@ export const OverviewDashboard = ({ onNavigate }) => {
           <p className="text-[10px] text-slate-400 mt-1">Protected PDF & notes repo</p>
         </div>
 
-        {/* Card 3: Announcements */}
+        {/* Card 3 */}
         <div
           onClick={() => onNavigate('ANNOUNCEMENTS')}
           className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group"
@@ -249,7 +249,7 @@ export const OverviewDashboard = ({ onNavigate }) => {
           </p>
         </div>
 
-        {/* Card 4: Democracy & Polls */}
+        {/* Card 4 & Polls */}
         <div
           onClick={() => onNavigate('POLLS')}
           className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group"
@@ -268,9 +268,9 @@ export const OverviewDashboard = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* Main Content Split: Next Class & Latest Announcements */}
+      {/* Main Content Split Class & Latest Announcements */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Schedule & Today's classes */}
+        {/* Left 2 Cols & Today's classes */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
@@ -359,7 +359,7 @@ export const OverviewDashboard = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Right 1 Col: Latest Broadcast Announcements Feed */}
+        {/* Right 1 Col Broadcast Announcements Feed */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">

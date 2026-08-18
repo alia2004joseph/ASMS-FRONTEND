@@ -40,11 +40,11 @@ export function AIAssistantModule() {
     setTimeout(() => {
       let reply = "Here is an overview based on your class syllabus and lecture notes. For further details, please review the uploaded materials in the Course Materials section.";
       if (textToSend.toLowerCase().includes("equation") || textToSend.toLowerCase().includes("mechanics")) {
-        reply = "Key Dynamics Equations:\n1. Newton's 2nd Law: F = m*a\n2. Work-Energy Principle: T1 + U1-2 = T2\n3. Conservation of Linear Momentum: m*v1 = m*v2";
+        reply = "Key Dynamics Equations:\n1. Newton's 2nd Law = m*a\n2. Work-Energy Principle + U1-2 = T2\n3. Conservation of Linear Momentum: m*v1 = m*v2";
       } else if (textToSend.toLowerCase().includes("question") || textToSend.toLowerCase().includes("revision")) {
         reply = "Sample Revision Questions for CAT 1:\nQ1. Derive the velocity equation for curvilinear motion.\nQ2. A 15kg block slides down a 30° incline. Calculate its speed after 5m.\nQ3. State D'Alembert's principle and apply it to a rotating pulley system.";
       } else if (textToSend.toLowerCase().includes("announcement")) {
-        reply = "Draft Class Notice:\n'Attention Class: Please note that tomorrow's Engineering Mechanics tutorial will take place at 10:00 AM in LT-3. Please come with your tutorial question sheets printed.'";
+        reply = "Draft Class Notice:\n'Attention Class note that tomorrow's Engineering Mechanics tutorial will take place at 10:00 AM in LT-3. Please come with your tutorial question sheets printed.'";
       }
 
       const botMsg = {

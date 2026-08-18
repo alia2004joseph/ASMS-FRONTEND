@@ -135,7 +135,7 @@ export const FeedbackModule = () => {
 
   const canTriage = user?.role === 'LECTURER' || user?.role === 'ADMIN' || isClassRep;
 
-  const getStatusBadge = (status: StudentFeedback['status']) => {
+  const getStatusBadge = (status) => {
     switch (status) {
       case 'SUBMITTED':
         return <Badge variant="warning">Submitted</Badge>;
@@ -150,7 +150,7 @@ export const FeedbackModule = () => {
     }
   };
 
-  const getCategoryBadge = (cat: StudentFeedback['category']) => {
+  const getCategoryBadge = (cat) => {
     switch (cat) {
       case 'ACADEMIC':
         return <Badge variant="purple">Academic / Teaching</Badge>;
@@ -271,7 +271,7 @@ export const FeedbackModule = () => {
                 {/* Triage / Update trigger for staff/reps */}
                 {canTriage && (
                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-[11px] text-slate-400">Class: ME-Y3-2026</span>
+                    <span className="text-[11px] text-slate-400">Class-Y3-2026</span>
                     <button
                       onClick={() => {
                         setRespondFeedback(item);
@@ -303,7 +303,7 @@ export const FeedbackModule = () => {
             <label className="block text-xs font-bold text-slate-700 mb-1">Feedback Category *</label>
             <select
               value={category}
-              onChange={(e) => setCategory(e.target.value as StudentFeedback['category'])}
+              onChange={(e) => setCategory(e.target.value['category'])}
               className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none"
             >
               <option value="ACADEMIC">Teaching Quality & Course Content</option>
@@ -398,7 +398,7 @@ export const FeedbackModule = () => {
             <label className="block text-xs font-bold text-slate-700 mb-1">Update Status *</label>
             <select
               value={responseStatus}
-              onChange={(e) => setResponseStatus(e.target.value as StudentFeedback['status'])}
+              onChange={(e) => setResponseStatus(e.target.value['status'])}
               className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none"
             >
               <option value="UNDER_REVIEW">Under Review (Acknowledged)</option>

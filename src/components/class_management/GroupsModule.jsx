@@ -104,7 +104,7 @@ export const GroupsModule = () => {
     }
   };
 
-  const handlePublish = async (gs: GroupSet) => {
+  const handlePublish = async (gs) => {
     try {
       setPublishingId(gs.id);
       const updated = await api.publishGroupSet(gs.id);
@@ -421,7 +421,7 @@ export const GroupsModule = () => {
           <div className="p-3 bg-indigo-50 rounded-xl border border-indigo-200 text-[11px] text-indigo-900 flex items-start gap-2">
             <Sparkles className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
             <p>
-              Draft Protection: Generated groups will initially be in <strong>Draft Mode</strong> so you can review allocations. Students will only see their groups after you click "Publish".
+              Draft Protection groups will initially be in <strong>Draft Mode</strong> so you can review allocations. Students will only see their groups after you click "Publish".
             </p>
           </div>
 

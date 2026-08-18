@@ -128,7 +128,7 @@ export const AnnouncementsModule = () => {
     }
   };
 
-  const handleApprove = async (ann: Announcement) => {
+  const handleApprove = async (ann) => {
     try {
       const updated = await api.reviewAnnouncement(ann.id, 'APPROVE');
       setAnnouncements((prev) => prev.map((a) => (a.id === ann.id ? updated : a)));
@@ -139,7 +139,7 @@ export const AnnouncementsModule = () => {
     }
   };
 
-  const handleRejectClick = (ann: Announcement) => {
+  const handleRejectClick = (ann) => {
     setSelectedRejectAnn(ann);
     setRejectionReason('');
     setRejectModalOpen(true);
@@ -169,7 +169,7 @@ export const AnnouncementsModule = () => {
     return a.status === selectedFilter;
   });
 
-  const getPriorityBadge = (priority: Announcement['priority']) => {
+  const getPriorityBadge = (priority) => {
     switch (priority) {
       case 'URGENT':
         return <Badge variant="danger">URGENT ALERT</Badge>;
@@ -180,7 +180,7 @@ export const AnnouncementsModule = () => {
     }
   };
 
-  const getStatusBadge = (status: Announcement['status']) => {
+  const getStatusBadge = (status) => {
     switch (status) {
       case 'PUBLISHED':
         return <Badge variant="success">Published</Badge>;
@@ -397,8 +397,8 @@ export const AnnouncementsModule = () => {
         title={isClassRep && user?.role === 'STUDENT' ? 'Draft Class Announcement' : 'Publish Announcement'}
         subtitle={
           isClassRep && user?.role === 'STUDENT'
-            ? 'Workflow Policy: Representative announcements are submitted to the course lecturer for review before broadcasting.'
-            : 'Immediate broadcast: An in-app alert and institutional email will be dispatched to enrolled students.'
+            ? 'Workflow Policy announcements are submitted to the course lecturer for review before broadcasting.'
+            : 'Immediate broadcast in-app alert and institutional email will be dispatched to enrolled students.'
         }
       >
         <form onSubmit={handleCreateSubmit} className="space-y-4">
@@ -406,7 +406,7 @@ export const AnnouncementsModule = () => {
             <label className="block text-xs font-bold text-slate-700 mb-1">Announcement Title *</label>
             <input
               type="text"
-              placeholder="e.g. Schedule Revision: Fluid Mechanics Lab Group Shifts"
+              placeholder="e.g. Schedule Revision Mechanics Lab Group Shifts"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white text-slate-800"
@@ -435,7 +435,7 @@ export const AnnouncementsModule = () => {
               <label className="block text-xs font-bold text-slate-700 mb-1">Broadcast Priority *</label>
               <select
                 value={priority}
-                onChange={(e) => setPriority(e.target.value as Announcement['priority'])}
+                onChange={(e) => setPriority(e.target.value['priority'])}
                 className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none"
               >
                 <option value="NORMAL">Normal / General Notice</option>
