@@ -12,15 +12,31 @@ import {
   Sparkles,
   ClipboardList,
   Bell,
+  Vote,
+  UsersRound,
 } from "lucide-react";
 
 // Each nav item: { label, path, icon }
 // Paths are relative to the role's /app/<role> base route.
-
 export const ROLE_NAVIGATION = {
+  admin: [
+    { label: "Dashboard", path: "", icon: Home },
+    { label: "Users", path: "users", icon: Users },
+    { label: "Class Reps", path: "class-reps", icon: UsersRound },
+    { label: "Academics", path: "academics", icon: BookOpen },
+    { label: "Timetable", path: "timetable", icon: Calendar },
+    { label: "Attendance", path: "attendance", icon: CheckSquare },
+    { label: "Grading", path: "grading", icon: GraduationCap },
+    { label: "Finance", path: "finance", icon: Wallet },
+    { label: "Reports", path: "reports", icon: FileText },
+    { label: "Communication", path: "communication", icon: MessageSquare },
+    { label: "AI Assistant", path: "ai-assistant", icon: Sparkles },
+    { label: "Settings", path: "settings", icon: Settings },
+  ],
   school_admin: [
     { label: "Dashboard", path: "", icon: Home },
     { label: "Users", path: "users", icon: Users },
+    { label: "Class Reps", path: "class-reps", icon: UsersRound },
     { label: "Academics", path: "academics", icon: BookOpen },
     { label: "Timetable", path: "timetable", icon: Calendar },
     { label: "Attendance", path: "attendance", icon: CheckSquare },
@@ -34,6 +50,7 @@ export const ROLE_NAVIGATION = {
   teacher: [
     { label: "Dashboard", path: "", icon: Home },
     { label: "My Classes", path: "classes", icon: BookOpen },
+    { label: "Study Groups", path: "study-groups", icon: UsersRound },
     { label: "Timetable", path: "timetable", icon: Calendar },
     { label: "Attendance", path: "attendance", icon: CheckSquare },
     { label: "Grading", path: "grading", icon: GraduationCap },
@@ -46,12 +63,14 @@ export const ROLE_NAVIGATION = {
   student: [
     { label: "Dashboard", path: "", icon: Home },
     { label: "My Timetable", path: "timetable", icon: Calendar },
+    { label: "Study Groups", path: "study-groups", icon: UsersRound },
+    { label: "Democratic Polls", path: "polls", icon: Vote },
     { label: "Attendance", path: "attendance", icon: CheckSquare },
     { label: "Grades", path: "grades", icon: GraduationCap },
     { label: "Assignments", path: "assignments", icon: ClipboardList },
     { label: "Materials", path: "materials", icon: FileText },
     { label: "Notices", path: "notices", icon: Bell },
-    { label: "Messages", path: "messages", icon: MessageSquare },
+    { label: "Feedback", path: "feedback", icon: MessageSquare },
     { label: "AI Assistant", path: "ai-assistant", icon: Sparkles },
     { label: "Settings", path: "settings", icon: Settings },
   ],
@@ -78,14 +97,14 @@ export const ROLE_NAVIGATION = {
   ],
 };
 
-// School Administrator and Super Administrator share the admin nav for now.
 ROLE_NAVIGATION.super_admin = ROLE_NAVIGATION.school_admin;
 
 export const ROLE_LABELS = {
+  admin: "Administrator",
   super_admin: "Super Administrator",
   school_admin: "School Administrator",
   teacher: "Teacher",
-  student: "Student",
+  student: "Student / Class Rep",
   guardian: "Guardian",
   accountant: "Accountant",
 };
