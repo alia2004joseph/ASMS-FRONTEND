@@ -45,7 +45,7 @@ export default function AppRoutes() {
         <Route
           path="teacher/*"
           element={
-            <RoleRoute allowedRoles={["teacher"]}>
+            <RoleRoute allowedRoles={["teacher", "admin", "super_admin", "school_admin"]}>
               <TeacherDashboard />
             </RoleRoute>
           }
@@ -53,7 +53,7 @@ export default function AppRoutes() {
         <Route
           path="student/*"
           element={
-            <RoleRoute allowedRoles={["student"]}>
+            <RoleRoute allowedRoles={["student", "admin", "super_admin", "school_admin"]}>
               <StudentDashboard />
             </RoleRoute>
           }
@@ -61,7 +61,7 @@ export default function AppRoutes() {
         <Route
           path="guardian/*"
           element={
-            <RoleRoute allowedRoles={["guardian"]}>
+            <RoleRoute allowedRoles={["guardian", "admin", "super_admin", "school_admin"]}>
               <GuardianDashboard />
             </RoleRoute>
           }
@@ -69,7 +69,7 @@ export default function AppRoutes() {
         <Route
           path="accountant/*"
           element={
-            <RoleRoute allowedRoles={["accountant"]}>
+            <RoleRoute allowedRoles={["accountant", "admin", "super_admin", "school_admin"]}>
               <AccountantDashboard />
             </RoleRoute>
           }
