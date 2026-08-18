@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../services/api';
-import { ClassRepresentativeAssignment, StudentProfile, Classroom, Subject } from '../../types';
+import { api } from '../../services/classManagementService.js';
+import { ClassRepresentativeAssignment, StudentProfile, Classroom, Subject } from '../types.js';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import {
@@ -13,23 +13,23 @@ import {
   GraduationCap,
   BookOpen,
 } from 'lucide-react';
-import { Badge } from '../common/Badge';
-import { Modal } from '../common/Modal';
+import { Badge } from '../common/Badge.jsx';
+import { Modal } from '../common/Modal.jsx';
 
-export const ClassRepManagement: React.FC = () => {
+export const ClassRepManagement = () => {
   const { user } = useAuth();
   const { showToast } = useNotifications();
 
-  const [representatives, setRepresentatives] = useState<ClassRepresentativeAssignment[]>([]);
-  const [students, setStudents] = useState<StudentProfile[]>([]);
-  const [classrooms, setClassrooms] = useState<Classroom[]>([]);
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [representatives, setRepresentatives] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [classrooms, setClassrooms] = useState([]);
+  const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [assignModalOpen, setAssignModalOpen] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState('');
   const [selectedClassroomId, setSelectedClassroomId] = useState('class-me-y3');
-  const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
+  const [selectedSubjectId, setSelectedSubjectId] = useState('');
   const [isClassWide, setIsClassWide] = useState(true);
 
   // Granular permissions
@@ -67,7 +67,7 @@ export const ClassRepManagement: React.FC = () => {
     }
   };
 
-  const handleAssignSubmit = async (e: React.FormEvent) => {
+  const handleAssignSubmit = async (e) => {
     e.preventDefault();
     if (!selectedStudentId || !selectedClassroomId) {
       showToast('Validation Error', 'Student and Classroom are required.', 'warning');
@@ -92,7 +92,7 @@ export const ClassRepManagement: React.FC = () => {
       setRepresentatives((prev) => [created, ...prev]);
       showToast('Class Representative Appointed', 'Student permissions and leadership access have been granted.', 'success');
       setAssignModalOpen(false);
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Assignment failed';
       showToast('Assignment Failed', errorMsg, 'error');
     } finally {
@@ -100,13 +100,13 @@ export const ClassRepManagement: React.FC = () => {
     }
   };
 
-  const handleRevoke = async (id: string) => {
+  const handleRevoke = async (id) => {
     if (!confirm('Are you sure you want to revoke this Class Representative appointment?')) return;
     try {
       await api.revokeRepresentative(id);
       setRepresentatives((prev) => prev.filter((r) => r.id !== id));
       showToast('Appointment Revoked', 'The representative role has been deactivated.', 'info');
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Revocation failed';
       showToast('Error', errorMsg, 'error');
     }

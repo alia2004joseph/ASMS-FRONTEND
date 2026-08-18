@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../services/api';
-import { Poll, Subject } from '../../types';
+import { api } from '../../services/classManagementService.js';
+import { Poll, Subject } from '../types.js';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import {
@@ -14,24 +14,24 @@ import {
   Sparkles,
   HelpCircle,
 } from 'lucide-react';
-import { Badge } from '../common/Badge';
-import { Modal } from '../common/Modal';
+import { Badge } from '../common/Badge.jsx';
+import { Modal } from '../common/Modal.jsx';
 
-export const PollsModule: React.FC = () => {
+export const PollsModule = () => {
   const { user, isClassRep } = useAuth();
   const { showToast } = useNotifications();
 
-  const [polls, setPolls] = useState<Poll[]>([]);
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [polls, setPolls] = useState([]);
+  const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [votingPollId, setVotingPollId] = useState<string | null>(null);
+  const [votingPollId, setVotingPollId] = useState(null);
 
   // Create Poll Form
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [pollType, setPollType] = useState<'VOTE' | 'PROPOSAL'>('PROPOSAL');
+  const [pollType, setPollType] = useState('PROPOSAL');
   const [subjectId, setSubjectId] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [proposalAction, setProposalAction] = useState('Reschedule Lecture / Lab Session');
@@ -58,7 +58,7 @@ export const PollsModule: React.FC = () => {
     }
   };
 
-  const handleVote = async (pollId: string, optionId?: string, voteType?: string) => {
+  const handleVote = async (pollId, optionId?, voteType?) => {
     try {
       setVotingPollId(pollId);
       const res = await api.votePoll(pollId, {
@@ -68,7 +68,7 @@ export const PollsModule: React.FC = () => {
 
       setPolls((prev) => prev.map((p) => (p.id === pollId ? res.poll : p)));
       showToast('Vote Submitted', 'Your ballot has been securely counted.', 'success');
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Voting failed';
       showToast('Vote Error', errorMsg, 'error');
     } finally {
@@ -76,7 +76,7 @@ export const PollsModule: React.FC = () => {
     }
   };
 
-  const handleCreateSubmit = async (e: React.FormEvent) => {
+  const handleCreateSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) {
       showToast('Validation Error', 'Poll Title is required.', 'warning');
@@ -109,7 +109,7 @@ export const PollsModule: React.FC = () => {
       setCreateModalOpen(false);
       setTitle('');
       setDescription('');
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to create poll';
       showToast('Error', errorMsg, 'error');
     } finally {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../services/api';
-import { Announcement, Subject } from '../../types';
+import { api } from '../../services/classManagementService.js';
+import { Announcement, Subject } from '../types.js';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import {
@@ -18,27 +18,27 @@ import {
   Sparkles,
   Loader2,
 } from 'lucide-react';
-import { Badge } from '../common/Badge';
-import { Modal } from '../common/Modal';
+import { Badge } from '../common/Badge.jsx';
+import { Modal } from '../common/Modal.jsx';
 
-export const AnnouncementsModule: React.FC = () => {
+export const AnnouncementsModule = () => {
   const { user, isClassRep } = useAuth();
   const { showToast } = useNotifications();
 
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [announcements, setAnnouncements] = useState([]);
+  const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedFilter, setSelectedFilter] = useState<string>('ALL');
+  const [selectedFilter, setSelectedFilter] = useState('ALL');
 
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
-  const [selectedRejectAnn, setSelectedRejectAnn] = useState<Announcement | null>(null);
+  const [selectedRejectAnn, setSelectedRejectAnn] = useState(null);
   const [rejectionReason, setRejectionReason] = useState('');
 
   // Create form state
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [priority, setPriority] = useState<Announcement['priority']>('NORMAL');
+  const [priority, setPriority] = useState('NORMAL');
   const [subjectId, setSubjectId] = useState('');
   const [attachmentName, setAttachmentName] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -88,7 +88,7 @@ export const AnnouncementsModule: React.FC = () => {
     }
   };
 
-  const handleCreateSubmit = async (e: React.FormEvent) => {
+  const handleCreateSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) {
       showToast('Validation Error', 'Title and Content are required.', 'warning');
@@ -120,7 +120,7 @@ export const AnnouncementsModule: React.FC = () => {
       setContent('');
       setAttachmentName('');
       setSubjectId('');
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to submit announcement';
       showToast('Error', errorMsg, 'error');
     } finally {
@@ -133,7 +133,7 @@ export const AnnouncementsModule: React.FC = () => {
       const updated = await api.reviewAnnouncement(ann.id, 'APPROVE');
       setAnnouncements((prev) => prev.map((a) => (a.id === ann.id ? updated : a)));
       showToast('Announcement Approved & Published', `"${ann.title}" is now published. Students have been notified.`, 'success');
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Approval failed';
       showToast('Approval Failed', errorMsg, 'error');
     }
@@ -145,7 +145,7 @@ export const AnnouncementsModule: React.FC = () => {
     setRejectModalOpen(true);
   };
 
-  const handleRejectSubmit = async (e: React.FormEvent) => {
+  const handleRejectSubmit = async (e) => {
     e.preventDefault();
     if (!selectedRejectAnn || !rejectionReason.trim()) return;
 
@@ -155,7 +155,7 @@ export const AnnouncementsModule: React.FC = () => {
       showToast('Announcement Rejected', 'The representative has been notified with the provided reason.', 'info');
       setRejectModalOpen(false);
       setSelectedRejectAnn(null);
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Rejection failed';
       showToast('Error', errorMsg, 'error');
     }

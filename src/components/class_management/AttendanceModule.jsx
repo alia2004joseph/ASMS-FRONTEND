@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
-import { api } from '../../services/api';
-import { AttendanceSession, Subject, StudentProfile } from '../../types';
+import { api } from '../../services/classManagementService.js';
+import { AttendanceSession, Subject, StudentProfile } from '../types.js';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import {
@@ -19,24 +19,24 @@ import {
   Sparkles,
   Maximize2,
 } from 'lucide-react';
-import { Badge } from '../common/Badge';
-import { Modal } from '../common/Modal';
-import { generateAttendanceSheetPDF } from '../common/PDFGenerator';
+import { Badge } from '../common/Badge.jsx';
+import { Modal } from '../common/Modal.jsx';
+import { generateAttendanceSheetPDF } from '../../utils/attendancePDFGenerator.js';
 
-export const AttendanceModule: React.FC = () => {
+export const AttendanceModule = () => {
   const { user, isClassRep, studentProfile } = useAuth();
   const { showToast } = useNotifications();
 
-  const [sessions, setSessions] = useState<AttendanceSession[]>([]);
-  const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [students, setStudents] = useState<StudentProfile[]>([]);
+  const [sessions, setSessions] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Modals
   const [startModalOpen, setStartModalOpen] = useState(false);
   const [checkinModalOpen, setCheckinModalOpen] = useState(false);
-  const [qrModalSession, setQrModalSession] = useState<AttendanceSession | null>(null);
-  const [qrDataUrl, setQrDataUrl] = useState<string>('');
+  const [qrModalSession, setQrModalSession] = useState(null);
+  const [qrDataUrl, setQrDataUrl] = useState('');
 
   // Start Session Form
   const [selectedSubjectId, setSelectedSubjectId] = useState('');
@@ -91,7 +91,7 @@ export const AttendanceModule: React.FC = () => {
     }
   }, [qrModalSession]);
 
-  const handleStartSession = async (e: React.FormEvent) => {
+  const handleStartSession = async (e) => {
     e.preventDefault();
     if (!selectedSubjectId || !topic.trim()) {
       showToast('Validation Error', 'Please select a subject and specify the class topic.', 'warning');
@@ -116,7 +116,7 @@ export const AttendanceModule: React.FC = () => {
       setStartModalOpen(false);
       setTopic('');
       setQrModalSession(newSession);
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to start session';
       showToast('Error', errorMsg, 'error');
     } finally {
@@ -132,13 +132,13 @@ export const AttendanceModule: React.FC = () => {
       if (qrModalSession?.id === session.id) {
         setQrModalSession(null);
       }
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to close session';
       showToast('Error', errorMsg, 'error');
     }
   };
 
-  const handleStudentCheckin = async (e: React.FormEvent) => {
+  const handleStudentCheckin = async (e) => {
     e.preventDefault();
     if (!sessionCodeInput.trim()) return;
 
@@ -152,7 +152,7 @@ export const AttendanceModule: React.FC = () => {
       setCheckinModalOpen(false);
       setSessionCodeInput('');
       await loadData();
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Check-in failed';
       showToast('Check-in Failed', errorMsg, 'error');
     } finally {

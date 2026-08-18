@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../services/api';
-import { AuditLog, EmailLog } from '../../types';
+import { api } from '../../services/classManagementService.js';
+import { AuditLog, EmailLog } from '../types.js';
 import { History, Mail, Filter, Search, ShieldAlert, CheckCircle2, Clock } from 'lucide-react';
-import { Badge } from '../common/Badge';
+import { Badge } from '../common/Badge.jsx';
 
-export const AuditLogsView: React.FC = () => {
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
-  const [emailLogs, setEmailLogs] = useState<EmailLog[]>([]);
+export const AuditLogsView = () => {
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [emailLogs, setEmailLogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'AUDIT' | 'EMAILS'>('AUDIT');
+  const [activeTab, setActiveTab] = useState('AUDIT');
   const [search, setSearch] = useState('');
 
   useEffect(() => {

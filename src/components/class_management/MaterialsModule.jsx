@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../services/api';
-import { Material, Subject } from '../../types';
+import { api } from '../../services/classManagementService.js';
+import { Material, Subject } from '../types.js';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import {
@@ -16,28 +16,28 @@ import {
   Calendar,
   CheckCircle2,
 } from 'lucide-react';
-import { Badge } from '../common/Badge';
-import { Modal } from '../common/Modal';
+import { Badge } from '../common/Badge.jsx';
+import { Modal } from '../common/Modal.jsx';
 
-export const MaterialsModule: React.FC = () => {
+export const MaterialsModule = () => {
   const { user, isClassRep } = useAuth();
   const { showToast } = useNotifications();
 
-  const [materials, setMaterials] = useState<Material[]>([]);
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [materials, setMaterials] = useState([]);
+  const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedSubject, setSelectedSubject] = useState<string>('ALL');
-  const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+  const [selectedSubject, setSelectedSubject] = useState('ALL');
+  const [selectedCategory, setSelectedCategory] = useState('ALL');
 
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState(null);
 
   // Upload form state
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [subjectId, setSubjectId] = useState('');
-  const [category, setCategory] = useState<Material['category']>('LECTURE_NOTES');
+  const [category, setCategory] = useState('LECTURE_NOTES');
   const [fileName, setFileName] = useState('');
   const [uploading, setUploading] = useState(false);
 
@@ -71,7 +71,7 @@ export const MaterialsModule: React.FC = () => {
       setMaterials((prev) =>
         prev.map((m) => (m.id === mat.id ? { ...m, download_count: m.download_count + 1 } : m))
       );
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Download authorization failed';
       showToast('Access Denied', errorMsg, 'error');
     } finally {
@@ -85,13 +85,13 @@ export const MaterialsModule: React.FC = () => {
       await api.deleteMaterial(mat.id);
       setMaterials((prev) => prev.filter((m) => m.id !== mat.id));
       showToast('Material Deleted', 'The course material has been removed.', 'info');
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Delete failed';
       showToast('Delete Failed', errorMsg, 'error');
     }
   };
 
-  const handleUploadSubmit = async (e: React.FormEvent) => {
+  const handleUploadSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !subjectId) {
       showToast('Validation Error', 'Title and Subject are required fields.', 'warning');
@@ -117,7 +117,7 @@ export const MaterialsModule: React.FC = () => {
       setTitle('');
       setDescription('');
       setFileName('');
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Upload failed';
       showToast('Upload Failed', errorMsg, 'error');
     } finally {

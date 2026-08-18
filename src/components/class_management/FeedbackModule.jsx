@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../services/api';
-import { StudentFeedback, Subject } from '../../types';
+import { api } from '../../services/classManagementService.js';
+import { StudentFeedback, Subject } from '../types.js';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import {
@@ -16,30 +16,30 @@ import {
   Loader2,
   FileText,
 } from 'lucide-react';
-import { Badge } from '../common/Badge';
-import { Modal } from '../common/Modal';
+import { Badge } from '../common/Badge.jsx';
+import { Modal } from '../common/Modal.jsx';
 
-export const FeedbackModule: React.FC = () => {
+export const FeedbackModule = () => {
   const { user, isClassRep } = useAuth();
   const { showToast } = useNotifications();
 
-  const [feedbackList, setFeedbackList] = useState<StudentFeedback[]>([]);
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [feedbackList, setFeedbackList] = useState([]);
+  const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [submitModalOpen, setSubmitModalOpen] = useState(false);
   const [summaryModalOpen, setSummaryModalOpen] = useState(false);
-  const [aiSummary, setAiSummary] = useState<string>('');
+  const [aiSummary, setAiSummary] = useState('');
   const [summarizing, setSummarizing] = useState(false);
-  const [respondFeedback, setRespondFeedback] = useState<StudentFeedback | null>(null);
-  const [responseStatus, setResponseStatus] = useState<StudentFeedback['status']>('RESOLVED');
+  const [respondFeedback, setRespondFeedback] = useState(null);
+  const [responseStatus, setResponseStatus] = useState('RESOLVED');
   const [adminResponseText, setAdminResponseText] = useState('');
   const [updating, setUpdating] = useState(false);
 
   // Submit Feedback Form
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
-  const [category, setCategory] = useState<StudentFeedback['category']>('ACADEMIC');
+  const [category, setCategory] = useState('ACADEMIC');
   const [subjectId, setSubjectId] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -79,7 +79,7 @@ export const FeedbackModule: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !message.trim()) {
       showToast('Validation Error', 'Title and Message are required.', 'warning');
@@ -102,7 +102,7 @@ export const FeedbackModule: React.FC = () => {
       setSubmitModalOpen(false);
       setTitle('');
       setMessage('');
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to submit feedback';
       showToast('Error', errorMsg, 'error');
     } finally {
@@ -110,7 +110,7 @@ export const FeedbackModule: React.FC = () => {
     }
   };
 
-  const handleStatusUpdate = async (e: React.FormEvent) => {
+  const handleStatusUpdate = async (e) => {
     e.preventDefault();
     if (!respondFeedback) return;
 
@@ -125,7 +125,7 @@ export const FeedbackModule: React.FC = () => {
       showToast('Feedback Updated', 'Status and response have been recorded.', 'success');
       setRespondFeedback(null);
       setAdminResponseText('');
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Update failed';
       showToast('Error', errorMsg, 'error');
     } finally {

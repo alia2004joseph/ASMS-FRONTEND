@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
-import { api } from '../../services/api';
+import { api } from '../../services/classManagementService.js';
 import {
   TimetableEntry,
   Announcement,
@@ -9,7 +9,7 @@ import {
   AttendanceSession,
   Poll,
   StudentFeedback,
-} from '../../types';
+} from '../types.js';
 import {
   GraduationCap,
   Calendar,
@@ -28,24 +28,22 @@ import {
   CheckCircle2,
   FileDown,
 } from 'lucide-react';
-import { Badge } from '../common/Badge';
-import { NavTab } from '../layout/Sidebar';
-import { generateAttendanceSheetPDF } from '../common/PDFGenerator';
+import { Badge } from '../common/Badge.jsx';
+import { NavTab } from '../layout/Sidebar.jsx';
+import { generateAttendanceSheetPDF } from '../../utils/attendancePDFGenerator.js';
 
-interface OverviewDashboardProps {
-  onNavigate: (tab: NavTab) => void;
-}
 
-export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate }) => {
+
+export const OverviewDashboard = ({ onNavigate }) => {
   const { user, isClassRep, studentProfile } = useAuth();
   const { showToast } = useNotifications();
 
-  const [timetable, setTimetable] = useState<TimetableEntry[]>([]);
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [materials, setMaterials] = useState<Material[]>([]);
-  const [sessions, setSessions] = useState<AttendanceSession[]>([]);
-  const [polls, setPolls] = useState<Poll[]>([]);
-  const [feedbackList, setFeedbackList] = useState<StudentFeedback[]>([]);
+  const [timetable, setTimetable] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
+  const [materials, setMaterials] = useState([]);
+  const [sessions, setSessions] = useState([]);
+  const [polls, setPolls] = useState([]);
+  const [feedbackList, setFeedbackList] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

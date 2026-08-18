@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { api } from '../../services/api';
+import { api } from '../../services/classManagementService.js';
 import {
   Sparkles,
   Bot,
@@ -18,18 +18,13 @@ import {
   MessageSquare,
   ShieldCheck,
 } from 'lucide-react';
-import { Badge } from '../common/Badge';
+import { Badge } from '../common/Badge.jsx';
 
-interface Message {
-  id: string;
-  sender: 'user' | 'model';
-  text: string;
-  timestamp: string;
-}
 
-export const AIAssistantModule: React.FC = () => {
+
+export const AIAssistantModule = () => {
   const { user, isClassRep, studentProfile } = useAuth();
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState([
     {
       id: 'welcome',
       sender: 'model',
@@ -49,7 +44,7 @@ export const AIAssistantModule: React.FC = () => {
     scrollToBottom();
   }, [messages, loading]);
 
-  const handleSend = async (customText?: string) => {
+  const handleSend = async (customText?) => {
     const textToSend = customText || inputPrompt;
     if (!textToSend.trim() || loading) return;
 
@@ -83,7 +78,7 @@ export const AIAssistantModule: React.FC = () => {
       };
 
       setMessages((prev) => [...prev, modelMsg]);
-    } catch (err: unknown) {
+    } catch (err) {
       console.error('AI Query failed:', err);
       const fallbackMsg: Message = {
         id: `ai-err-${Date.now()}`,

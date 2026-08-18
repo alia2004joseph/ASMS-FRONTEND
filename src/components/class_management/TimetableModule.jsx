@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../services/api';
-import { TimetableEntry, DayOfWeek } from '../../types';
+import { api } from '../../services/classManagementService.js';
+import { TimetableEntry, DayOfWeek } from '../types.js';
 import { useNotifications } from '../../context/NotificationContext';
 import { Calendar, Clock, MapPin, User, Send, Filter, BookOpen } from 'lucide-react';
-import { Badge } from '../common/Badge';
+import { Badge } from '../common/Badge.jsx';
 
-export const TimetableModule: React.FC = () => {
-  const [timetable, setTimetable] = useState<TimetableEntry[]>([]);
+export const TimetableModule = () => {
+  const [timetable, setTimetable] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDay, setSelectedDay] = useState<DayOfWeek | 'ALL'>('ALL');
-  const [sendingReminderId, setSendingReminderId] = useState<string | null>(null);
+  const [selectedDay, setSelectedDay] = useState('ALL');
+  const [sendingReminderId, setSendingReminderId] = useState(null);
   const { showToast } = useNotifications();
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export const TimetableModule: React.FC = () => {
     }
   };
 
-  const days: { id: DayOfWeek | 'ALL'; label: string }[] = [
+  const days: { id; label }[] = [
     { id: 'ALL', label: 'All Days' },
     { id: 'MONDAY', label: 'Monday' },
     { id: 'TUESDAY', label: 'Tuesday' },

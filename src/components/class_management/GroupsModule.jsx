@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../../services/api';
-import { GroupSet, Subject, StudentProfile } from '../../types';
+import { api } from '../../services/classManagementService.js';
+import { GroupSet, Subject, StudentProfile } from '../types.js';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import {
@@ -16,29 +16,29 @@ import {
   Crown,
   Share2,
 } from 'lucide-react';
-import { Badge } from '../common/Badge';
-import { Modal } from '../common/Modal';
+import { Badge } from '../common/Badge.jsx';
+import { Modal } from '../common/Modal.jsx';
 
-export const GroupsModule: React.FC = () => {
+export const GroupsModule = () => {
   const { user, isClassRep, studentProfile } = useAuth();
   const { showToast } = useNotifications();
 
-  const [groupSets, setGroupSets] = useState<GroupSet[]>([]);
-  const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [students, setStudents] = useState<StudentProfile[]>([]);
+  const [groupSets, setGroupSets] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
-  const [selectedGroupSet, setSelectedGroupSet] = useState<GroupSet | null>(null);
+  const [selectedGroupSet, setSelectedGroupSet] = useState(null);
 
   // Generation form
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [subjectId, setSubjectId] = useState('');
   const [numGroups, setNumGroups] = useState(4);
-  const [allocationMethod, setAllocationMethod] = useState<'BALANCED' | 'RANDOM' | 'MANUAL'>('BALANCED');
+  const [allocationMethod, setAllocationMethod] = useState('BALANCED');
   const [generating, setGenerating] = useState(false);
-  const [publishingId, setPublishingId] = useState<string | null>(null);
+  const [publishingId, setPublishingId] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -68,7 +68,7 @@ export const GroupsModule: React.FC = () => {
     }
   };
 
-  const handleGenerateSubmit = async (e: React.FormEvent) => {
+  const handleGenerateSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !subjectId) {
       showToast('Validation Error', 'Title and Subject are required.', 'warning');
@@ -96,7 +96,7 @@ export const GroupsModule: React.FC = () => {
       setGenerateModalOpen(false);
       setTitle('');
       setDescription('');
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to generate groups';
       showToast('Error', errorMsg, 'error');
     } finally {
@@ -117,7 +117,7 @@ export const GroupsModule: React.FC = () => {
         'In-app alerts and group roster emails have been sent to all allocated students.',
         'success'
       );
-    } catch (err: unknown) {
+    } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Publish failed';
       showToast('Error', errorMsg, 'error');
     } finally {
